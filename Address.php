@@ -1,10 +1,12 @@
-<?php
+ <?php
+
 class Address {
    // Instance attributes
    private $name         = array('FIRST'=>"", 'LAST'=>null); 
    private $street       = "";
    private $city         = "";
    private $state        = "";
+   private $country      = "";
    private $zip          = 0;
    
    // Operations
@@ -23,7 +25,7 @@ class Address {
      // string name()
      if( func_num_args() == 0 ) {
        if( empty($this->name['FIRST']) ) return $this->name['LAST'];
-       else                              return $this->name['LAST'].','.$this->name['FIRST']; 
+       else                              return $this->name['LAST'].', '.$this->name['FIRST']; 
      }
      
      // void name($value)
@@ -55,6 +57,14 @@ class Address {
      }
      
      return $this;
+   }
+
+   function fname() {
+      return $this->name['FIRST'];
+   }
+
+   function lname() {
+      return $this->name['LAST'];
    }
 
    
@@ -115,6 +125,25 @@ class Address {
      return $this;
    }
 
+
+   // country() prototypes:
+   //   string country()               returns the name of the country.
+   //                                         
+   //   void country(string $value)    set object's $country attribute
+   function country() {  
+     // string country()
+     if( func_num_args() == 0 ) {
+       return $this->country;
+     }
+     
+     // void country($value)
+     else if( func_num_args() == 1 ) {
+       $this->country = (string)func_get_arg(0);
+     }
+     
+     return $this;
+   }
+
    
    // zip() prototypes:
    //   int zip()               returns the zip code.
@@ -135,7 +164,7 @@ class Address {
    }
    
    
-   function __construct($name="", $street="", $city="", $state="", $zip=0) {
+   function __construct($name="", $street="", $city="", $state="", $country="", $zip=0) {
      // if $name contains at least one tab character, assume all attributes are provided in 
      // a tab separated list.  Otherwise assume $name is just the player's name.
      
@@ -150,6 +179,7 @@ class Address {
      $this->street($street);
      $this->city($city);
      $this->state($state);
+     $this->country($country);
      $this->zip($zip);
    }
    
