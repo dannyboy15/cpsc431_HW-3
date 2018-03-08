@@ -78,7 +78,7 @@
             <tr>
               <td style="text-align: right; background: lightblue;">Name (Last, First)</td>
               <td>
-                <select>
+                <select name="name">
                   <option value="">Choose player's name here</option>
                   <?php
 
