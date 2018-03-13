@@ -1,16 +1,16 @@
 <?php
-require("sanitize.php");
+
+require_once("sanitize.php");
 
 // create short variable names
-$name    = array(sanatize($_POST['firstName']), sanatize($_POST['lastName']));
-// $lname   =  sanatize($_POST['lastName']);
-$street  = sanatize($_POST['street']);
-$city    = sanatize($_POST['city']);
-$state   = sanatize($_POST['state']);
-$country = sanatize($_POST['country']);
+$name    = array(sanitize($_POST['firstName']), sanitize($_POST['lastName']));
+$street  = sanitize($_POST['street']);
+$city    = sanitize($_POST['city']);
+$state   = sanitize($_POST['state']);
+$country = sanitize($_POST['country']);
 $zip     = (int) $_POST['zipCode'];
 
-if(!empty($name[0])) {
+if(!empty($name[1])) {
 
     require('Address.php');
 
@@ -27,22 +27,28 @@ if(!empty($name[0])) {
     $stmt = mysqli_prepare($dbconn, $query);
 
     // Create variables to be bound
-    $fname   = $newAdder->fname();
-    $lname   = $newAdder->lname();
-    $street  = $newAdder->street();
-    $city    = $newAdder->city();
-    $state   = $newAdder->state();
-    $country = $newAdder->country();
-    $zip     = $newAdder->zip();
+    $fullname = explode(",", $newAdder->name());
+    $fname    = null;
+    if (isset($fullname[1])) {
+        $fname = trim($fullname[1]) == "" ? null : trim($fullname[1]);
+    }
+    $lname    = trim($fullname[0]);
+    $street   = $newAdder->street() == "" ? null : $newAdder->street();
+    $city     = $newAdder->city() == "" ? null : $newAdder->city();
+    $state    = $newAdder->state() == "" ? null : $newAdder->state();
+    $country  = $newAdder->country() == "" ? null : $newAdder->country();
+    $zip      = $newAdder->zip() == "" ? null : $newAdder->zip();
 
     if ($stmt) {
         mysqli_stmt_bind_param($stmt, 'sssssss', $fname, $lname, $street, $city,
             $state, $country, $zip);
-        mysqli_stmt_execute($stmt);
-
+        if (!mysqli_stmt_execute($stmt)) {
+            echo "SQL execution failed";
+        }
     }
 }
 
 require('home_page.php');
+
 ?>
 

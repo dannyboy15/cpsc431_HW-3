@@ -1,5 +1,6 @@
 <?php
-require("sanitize.php");
+
+require_once("sanitize.php");
 
 // create short variable names
 $name       = sanitize($_POST['name']);
@@ -42,8 +43,11 @@ if(!empty($name)) {
     $stmt = mysqli_prepare($dbconn, $query);
 
     // Create variables to be bound
-    $fullname     = explode(",", $newStat->name());
-    $fname    = trim($fullname[1]);
+    $fullname = explode(",", $newStat->name());
+    $fname    = null;
+    if (isset($fullname[1])) {
+        $fname = trim($fullname[1]) == "" ? null : trim($fullname[1]);
+    }
     $lname    = trim($fullname[0]);
     $time     = explode(":", $newStat->playingTime());
     $timeMin  = (int) $time[0];
